@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="css/app.css" />
+    <script src="js/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <div class="row">
+          <div>
+            <br />
+            <button @click="hesabEt" class="btn btn-secondary">Hesab Et</button>
+          </div>
+        </div>
+        <br />
+        <div>
+          <div v-for="sahisIkiTarihArasi of eshasIkiTarihArasi">
+            <br />
+            <b>{{ sahisIkiTarihArasi[0] }}</b>
+            <table class="table-striped table-bordered">
+              <thead></thead>
+              <tbody>
+                <tr v-for="(satir,i) in sahisIkiTarihArasi[1]" :key="i">
+                  <td>
+                    {{ ("00" + (i + 1) + "").slice(-3) }}. {{ satir["Tarih"] }},
+                    {{ satir["Sahifeler"] }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="js/app.js"></script>
+  </body>
+</html>
