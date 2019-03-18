@@ -5,7 +5,8 @@ new Vue({
   data: {
     eshas: [
       "1.Kişi ",
-      "2.Kişi ",
+      "2.Kişi "
+      /*,
       "3.Kişi ",
       "4.Kişi ",
       "5.Kişi ",
@@ -13,7 +14,7 @@ new Vue({
       "7.Kişi ",
       "8.Kişi ",
       "9.Kişi ",
-      "10.Kişi "
+      "10.Kişi "*/
     ],
     eshasSahifeler: [],
     sahifeAdedi: 10,
@@ -32,6 +33,21 @@ new Vue({
         "." +
         date.getFullYear()
       );
+    },
+    yazdir: function() {
+      var pdf = new jsPDF("p", "pt", "letter");
+      var divRapor = document.getElementById("divRapor");
+      pdf.html(divRapor, {
+        callback: function(pdf) {
+          var iframe = document.createElement("iframe");
+          iframe.setAttribute(
+            "style",
+            "position:absolute;right:0; top:0; bottom:0; height:100%; width:500px"
+          );
+          document.body.appendChild(iframe);
+          iframe.src = pdf.output("datauristring");
+        }
+      });
     },
     hesabEt: function() {
       this.sahifeDuzeniHesabEt();

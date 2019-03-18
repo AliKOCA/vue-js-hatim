@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,6 +13,8 @@
     />
     <link rel="stylesheet" href="css/app.css" />
     <script src="js/vue.js"></script>
+    <script src="js/sair/html2canvas.js"></script>
+    <script src="js/sair/jspdf.debug.js"></script>
   </head>
   <body>
     <div id="app">
@@ -21,24 +23,32 @@
           <div>
             <br />
             <button @click="hesabEt" class="btn btn-secondary">Hesab Et</button>
+            <button @click="yazdir" class="btn btn-secondary">Yazdır</button>
           </div>
         </div>
         <br />
         <div>
-          <div v-for="sahisIkiTarihArasi of eshasIkiTarihArasi">
-            <br />
-            <b>{{ sahisIkiTarihArasi[0] }}</b>
-            <table class="table-striped table-bordered">
-              <thead></thead>
-              <tbody>
-                <tr v-for="(satir,i) in sahisIkiTarihArasi[1]" :key="i">
-                  <td>
-                    {{ ("00" + (i + 1) + "").slice(-3) }}. {{ satir["Tarih"] }},
-                    {{ satir["Sahifeler"] }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div
+            id="divRapor"
+            style="font-family: 'Courier New', Courier, monospace; font-size: 8px"
+          >
+            <div v-for="sahisIkiTarihArasi of eshasIkiTarihArasi">
+              <br />
+              <b>{{ sahisIkiTarihArasi[0] }}</b>
+              <!-- table-striped table-bordered -->
+              <table class="table-bordered">
+                <thead></thead>
+                <tbody>
+                  <tr v-for="(satir,i) in sahisIkiTarihArasi[1]" :key="i">
+                    <td>
+                      {{ ("00" + (i + 1) + "").slice(-3) }}.
+                      {{ satir["Tarih"] }},
+                      {{ satir["Sahifeler"] }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
