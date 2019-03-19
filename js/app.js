@@ -1,12 +1,11 @@
-function hatimOlustur() {}
+"use strict";
 
 new Vue({
   el: "#app",
   data: {
     eshas: [
       "1.Kişi ",
-      "2.Kişi "
-      /*,
+      "2.Kişi ",
       "3.Kişi ",
       "4.Kişi ",
       "5.Kişi ",
@@ -14,12 +13,12 @@ new Vue({
       "7.Kişi ",
       "8.Kişi ",
       "9.Kişi ",
-      "10.Kişi "*/
+      "10.Kişi "
     ],
     eshasSahifeler: [],
     sahifeAdedi: 10,
     ilkTarih: new Date(2019, 0, 1),
-    nihaiTarih: new Date(2019, 3, 31),
+    nihaiTarih: new Date(2019, 4, 2),
     hatimSahifeleri: [],
     eshasIkiTarihArasi: []
   },
@@ -48,6 +47,109 @@ new Vue({
           iframe.src = pdf.output("datauristring");
         }
       });
+    },
+    satirCizgisiOlustur(pAded, pSatirCizgisi) {
+      let netice = "";
+      for (let intA = 1; intA < pAded; intA++) {
+        netice += pSatirCizgisi;
+      }
+      return netice;
+    },
+    satirCizgisiGetir(pAded) {
+      let netice = " " + this.satirCizgisiOlustur(pAded, "——————————————");
+      netice += this.satirCizgisiOlustur(pAded - 2, "—");
+      return netice;
+    },
+    yatayCizgiCiz(pDoc, pSutun, pSatir, pSatirdakiSutunAdedi) {
+      pDoc.setLineWidth(0.1);
+      pDoc.line(pSutun, pSatir, pSutun + pSatirdakiSutunAdedi * 33, pSatir);
+    },
+    dikeyCizgiCiz(pDoc, pSutun, pSatir, pBoy) {
+      pDoc.setLineWidth(0.1);
+      pDoc.line(pSutun, pSatir, pSutun, pSatir + pBoy);
+    },
+    yazdir2: function() {
+      //var doc = new jsPDF("landscape");
+      const satirdakiSutunAdedi = 5;
+      const satirCizgisi = this.satirCizgisiGetir(satirdakiSutunAdedi);
+      const sutunNo = 10;
+      var doc = new jsPDF();
+      this.eshasIkiTarihArasi.forEach(sahisIkiTarihArasi => {
+        let satirNo = 0;
+        doc.setFontSize(14);
+        doc.text(sutunNo, 10, sahisIkiTarihArasi[0]);
+        let sutunBiriktir = "| ";
+        let birikenSutun = 0;
+        let yazilacakSatirPoz = 12;
+        doc.setFontSize(8);
+        doc.text(sutunNo, yazilacakSatirPoz + 2, satirCizgisi);
+        sahisIkiTarihArasi[1].forEach(satir => {
+          doc.setFontSize(8);
+          satirNo++;
+          sutunBiriktir += satir["Tarih"] + " " + satir["Sahifeler"] + " | ";
+          if (birikenSutun === satirdakiSutunAdedi) {
+            yazilacakSatirPoz += 4;
+            doc.text(sutunNo, yazilacakSatirPoz, sutunBiriktir);
+            doc.text(sutunNo, yazilacakSatirPoz + 2, satirCizgisi);
+            console.log(sutunBiriktir);
+            sutunBiriktir = "| ";
+            birikenSutun = -1;
+          }
+          birikenSutun++;
+        });
+        doc.addPage();
+      });
+      doc.save("Test.pdf");
+    },
+    yazdir3: function() {
+      this.hesabEt();
+      //var doc = new jsPDF("landscape");
+      const satirdakiSutunAdedi = 5;
+      const sutunNo = 10;
+      var doc = new jsPDF();
+      this.eshasIkiTarihArasi.forEach(sahisIkiTarihArasi => {
+        //Üst forEach
+        let satirNo = 0;
+        doc.setFontSize(14);
+        doc.text(sutunNo, 10, sahisIkiTarihArasi[0]);
+        let birikenSutun = 0;
+        let yazilacakSatirPoz = 12;
+        let yazilacakSutunPoz = 0;
+        let dikeyCizgiBoyu = 4;
+        doc.setFontSize(8);
+        yazilacakSutunPoz = sutunNo;
+        yazilacakSatirPoz += 3;
+        sahisIkiTarihArasi[1].forEach(satir => {
+          //Alt forEach
+          doc.setFontSize(8);
+          satirNo++;
+          const yazilacakYazi = " " + satir["Tarih"] + " " + satir["Sahifeler"];
+          this.dikeyCizgiCiz(
+            doc,
+            yazilacakSutunPoz,
+            yazilacakSatirPoz - 3,
+            dikeyCizgiBoyu
+          );
+          yazilacakSutunPoz =
+            sutunNo + birikenSutun * (yazilacakYazi.length + 8);
+          doc.text(yazilacakSutunPoz, yazilacakSatirPoz, yazilacakYazi);
+          // yazilacakSutunPoz += yazilacakYazi.length;
+
+          if (birikenSutun === satirdakiSutunAdedi) {
+            this.yatayCizgiCiz(
+              doc,
+              sutunNo,
+              yazilacakSatirPoz + 1,
+              satirdakiSutunAdedi
+            );
+            yazilacakSatirPoz += 4;
+            birikenSutun = -1;
+          }
+          birikenSutun++;
+        });
+        doc.addPage();
+      });
+      doc.save("Test.pdf");
     },
     hesabEt: function() {
       this.sahifeDuzeniHesabEt();
@@ -103,7 +205,7 @@ new Vue({
       return netice;
     },
     sahifeDuzeniHesabEt: function() {
-      let sahife = 0;
+      let sahife = 1;
       let sahifeBitis;
       let araNetice = [];
       let siraNo = 0;
